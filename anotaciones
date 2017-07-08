@@ -1,0 +1,28 @@
+/************QUERY******************/
+https://github.com/nilportugues/php-sql-query-builder
+
+$q = $this->builder->select()
+->setTable('paraguay_2012_departamentos')
+->setColumns(['cartodb_id', 'arovia', 'dpto', 'dpto_desc'])
+->orderBy('dpto')
+->orderBy('dpto_desc')
+->limit(1);
+
+$q->where()
+->equals('user_id', 1); //si se utiliza en la misma linea, tira un error con el write del builder
+
+$this->builder->writeFormatted($q); //Necesario para obtener los valores ->getValues(), sino tira un array vacio
+$values = $this->builder->getValues(); //Obtiene todas las condicionales con su key (:v) y valor
+
+dd(Helper::getSqlQuery($q, $values));
+
+Helper::prepare() equivale a
+//        $this->builder->writeFormatted($q);
+//        $this->query = Helper::getSqlQuery($q, $this->builder->getValues());
+
+MODIFICADO ARCHIVO DE VENDOR PARA UPDATES EN PostgreSQL
+nilportugues/sql-query-builder/src/builder/syntax/UpdateWriter.php
+=> se elimina la tabla referencia ej: tabla.campo = talcosa
+//$column = $this->columnWriter->writeColumn(SyntaxFactory::createColumn($newColumn, $update->getTable()));
+=> queda campo = talcosa
+$column = reset($newColumn);//Custom

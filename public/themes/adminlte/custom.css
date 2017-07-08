@@ -1,0 +1,36 @@
+.no-padding-left {
+    padding-left: 0 !important;
+}
+
+.inner-addon {
+    position: relative;
+}
+
+.inner-addon .glyphicon {
+    /*color:#007f4f;*/
+    position: absolute;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.left-addon .glyphicon {
+    left: 0;
+}
+.right-addon .glyphicon {
+    right: 0;
+}
+
+.left-addon input {
+    padding-left:  30px;
+}
+.right-addon input {
+    padding-right: 30px;
+}
+
+.panel-title {
+    padding-left: 0 !important;
+}
+
+tr td.dataTables_empty {
+    text-align: center !important;
+}
