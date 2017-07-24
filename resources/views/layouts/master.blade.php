@@ -13,7 +13,8 @@
         {!! Html::style('themes/adminlte/dist/css/AdminLTE.min.css') !!}
         {!! Html::style('themes/adminlte/dist/css/skins/_all-skins.min.css') !!}
         {!! Html::style('vendor/alertify/css/alertify.min.css') !!}
-        {!! Html::style('vendor/alertify/css/alertify.rtl.min.css') !!}
+        {!! Html::style('vendor/alertify/css/themes/default.min.css') !!}
+        {!! Html::style('themes/adminlte/skin-arovia.css') !!}
         {!! Html::style('themes/adminlte/custom.css') !!}
 
         @section('styles')

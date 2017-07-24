@@ -26,13 +26,14 @@
                 <ul class="treeview-menu">
                     <li><a href="{{ route('mapa.departamentos.index') }}"><i class="fa fa-location-arrow"></i> Departamentos</a></li>
                     <li><a href="{{ route('mapa.distritos.index') }}"><i class="fa fa-location-arrow"></i> Distritos</a></li>
+                    <li><a href="{{ route('mapa.asentamientos.index') }}"><i class="fa fa-location-arrow"></i> Asentamientos</a></li>
                 </ul>
             </li>
             <li><a href=""><i class="fa fa-book"></i> <span>Documentación</span></a></li>
-            <li class="header">LABELS</li>
-            <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
-            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
+            <li class="header">Utilidades</li>
+            <li><a href="#"><i class="fa fa-circle-o text-green"></i> <span>Importar Excel</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-green"></i> <span>Exportar a Excel</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Exportar a PDF</span></a></li>
         </ul>
     </section>
     <!-- /.sidebar -->

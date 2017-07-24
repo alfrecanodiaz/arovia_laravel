@@ -40,4 +40,14 @@ $router->group(['prefix' => '/mapa'/*, 'middleware' => ['first', 'second']*/], f
     $router->delete('distritos/delete/{id}', 'DistritosController@delete')->name('mapa.distritos.delete');
     $router->get('distritos/autocomplete', 'DistritosController@autocomplete')->name('mapa.distritos.autocomplete');
 
+    /*===== Asentamientos =====*/
+    $router->get('asentamientos/index', 'AsentamientosController@index')->name('mapa.asentamientos.index');
+    $router->post('asentamientos/ajax-departamentos', 'AsentamientosController@indexAjax')->name('mapa.asentamientos.ajax');
+    $router->get('asentamientos/create', 'AsentamientosController@create')->name('mapa.asentamientos.create');
+    $router->post('asentamientos/store', 'AsentamientosController@store')->name('mapa.asentamientos.store');
+    $router->get('asentamientos/edit/{id}', 'AsentamientosController@edit')->name('mapa.asentamientos.edit');
+    $router->post('asentamientos/update/{id}', 'AsentamientosController@update')->name('mapa.asentamientos.update');
+    $router->delete('asentamientos/delete/{id}', 'AsentamientosController@delete')->name('mapa.asentamientos.delete');
+    $router->get('asentamientos/autocomplete', 'AsentamientosController@autocomplete')->name('mapa.asentamientos.autocomplete');
+
 });

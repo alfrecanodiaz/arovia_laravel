@@ -2,9 +2,9 @@
     <!-- Logo -->
     <a href="" class="logo">
         <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>A</b>LT</span>
+        <span class="logo-mini"><img src="{{url('/assets/logo-mini.png')}}" alt="Arovia"></span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg">Arovia</span>
+        <span class="logo-lg"><img src="{{url('/assets/logo.png')}}" alt="Arovia"></span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Departamentos')
+@section('title', 'Asentamientos')
 
 @section('styles')
 
@@ -8,13 +8,11 @@
 
 @section('content-header')
     <h1>
-        Departamentos
-        {{--<small>advanced tables</small>--}}
+        Asentamientos
     </h1>
     <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> {{ucwords($menu)}}</a></li>
-        {{--<li><a href="#">Tables</a></li>--}}
-        <li class="active">Departamentos</li>
+        <li class="active">Asentamientos</li>
     </ol>
 @stop
 
@@ -24,7 +22,7 @@
         <div class="col-xs-12">
             <div class="row">
                 <div class="btn-group pull-right" style="margin: 0 15px 15px 0;">
-                    <a href='{{ route('mapa.departamentos.create')}}' class='btn btn-primary btn-flat pull-right'>
+                    <a href='{{ route('mapa.asentamientos.create')}}' class='btn btn-primary btn-flat pull-right'>
                         <i class='glyphicon glyphicon-plus'></i>Agregar
                     </a>
                 </div>
@@ -32,20 +30,14 @@
             <div class="box">
                 <div class="box-header">
                     <div class="col-sm-12 no-padding-left">
-                        {!! Form::open(['route' => 'mapa.departamentos.ajax', 'method' => 'post', 'id' => 'search-form']) !!}
+                        {!! Form::open(['route' => 'mapa.asentamientos.ajax', 'method' => 'post', 'id' => 'search-form']) !!}
                             <div class="col-sm-2 no-padding-left">
                                 <div class="form-group">
-                                    {!! Form::label('departamento', 'Departamento') !!}
+                                    {!! Form::label('asentamiento', 'Asentamiento') !!}
                                     <div class="inner-addon right-addon">
-                                        <i class="glyphicon glyphicon-trash" id="borrar_departamento" title="Borrar filtro"></i>
-                                        {!! Form::text('departamento', null, ['class' => 'form-control', 'id' => 'departamento']) !!}
+                                        <i class="glyphicon glyphicon-trash" id="borrar_asentamiento" title="Borrar filtro"></i>
+                                        {!! Form::text('asentamiento', null, ['class' => 'form-control', 'id' => 'asentamiento']) !!}
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    {!! Form::label('arovia', 'Arovia') !!}
-                                    {!! Form::select('arovia', $arovia, null, ['class' => 'form-control', 'id' => 'arovia']) !!}
                                 </div>
                             </div>
                         {!! Form::close() !!}
@@ -56,9 +48,10 @@
                     <table cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
                         <thead>
                         <tr>
-                            <th>Departamento Nro.</th>
-                            <th>Descripción</th>
-                            <th>Arovia</th>
+                            <th>Nombre</th>
+                            <th>Fecha de creación</th>
+                            <th>Población</th>
+                            <th>Superficie</th>
                             <th data-sortable="false">Acciones</th>
                         </tr>
                         </thead>
@@ -71,9 +64,10 @@
                         </tbody>
                         <tfoot>
                         <tr>
-                            <th>Departamento Nro.</th>
-                            <th>Descripción</th>
-                            <th>Arovia</th>
+                            <th>Nombre</th>
+                            <th>Fecha de creación</th>
+                            <th>Población</th>
+                            <th>Superficie</th>
                             <th data-sortable="false">Acciones</th>
                         </tr>
                         </tfoot>
@@ -91,15 +85,17 @@
 
 @section('scripts')
 
+    @include('partials.global-scripts')
+
     <script type="text/javascript">
         $( document ).ready(function() {
 
-            var $input = $("#departamento");
+            var $input = $("#asentamiento");
             var $form = $("#search-form");
 
             $input.autocomplete(
             {
-                source: '{!! route('mapa.departamentos.autocomplete') !!}',
+                source: '{!! route('mapa.asentamientos.autocomplete') !!}',
                 minLength: 1,
                 select: function (event, ui) {
                     $(this).val(ui.item.label);
@@ -109,21 +105,16 @@
 
             $input.on('keyup keypress blur change', function()
             {
-                this.value = this.value.toLocaleUpperCase();
+                this.value = capitalizeFirstLetter(this.value);
             });
 
-            $('#borrar_departamento').click(function()
+            $('#borrar_asentamiento').click(function()
             {
                 $input.val('');
                 $form.submit();
             });
 
             $input.on("keyup",function()
-            {
-                $form.submit();
-            });
-
-            $('#arovia').on('change', function()
             {
                 $form.submit();
             });
@@ -150,20 +141,20 @@
                     "autoWidth": true,
                     ajax:
                         {
-                            url: '{!! route('mapa.departamentos.ajax') !!}',
+                            url: '{!! route('mapa.asentamientos.ajax') !!}',
                             type: "POST",
                             headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
                             data: function (e)
                             {
-                                e.departamento = $input.val();
-                                e.arovia = $('#arovia').val();
+                                e.asentamiento = $input.val();
                             }
                         },
                     columns:
                         [
-                            { data: 'dpto', name: 'dpto' },
-                            { data: 'dpto_desc', name: 'dpto_desc' },
-                            { data: 'arovia' , name: 'arovia' },
+                            { data: 'nombre', name: 'nombre' },
+                            { data: 'fecha_de_creacion', name: 'fecha_de_creacion' },
+                            { data: 'poblacion' , name: 'poblacion' },
+                            { data: 'superficie' , name: 'superficie' },
                             { data: 'action', name: 'action', orderable: false, searchable: false}
                         ],
                     language: {

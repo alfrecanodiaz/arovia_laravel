@@ -40,17 +40,31 @@
                                     </div>
                                 </div>
                             </div>
-                            {{--<div class="col-sm-2">
+                            <div class="col-sm-3">
                                 <div class="form-group">
-                                    {!! Form::label('arovia', 'Arovia') !!}
-                                    {!! Form::select('arovia', $arovia, null, ['class' => 'form-control', 'id' => 'arovia']) !!}
+                                    {!! Form::label('consejo_distrital', 'Consejo de Desarrollo Distrital') !!}
+                                    {!! Form::select('consejo_distrital',
+                                        ['' => 'Todos', 'Si' => 'Si', 'No' => 'No', 'En proceso' => 'En Proceso'],
+                                        null,
+                                        ['class' => 'form-control', 'id' => 'consejo_distrital']
+                                    ) !!}
                                 </div>
-                            </div>--}}
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    {!! Form::label('plan_distrital', 'Plan de Desarrollo Distrital') !!}
+                                    {!! Form::select('plan_distrital',
+                                        ['' => 'Todos', 'Si' => 'Si', 'No' => 'No', 'En proceso' => 'En Proceso'],
+                                        null,
+                                        ['class' => 'form-control', 'id' => 'plan_distrital']
+                                    ) !!}
+                                </div>
+                            </div>
                         {!! Form::close() !!}
                     </div>
                 </div>
                 <!-- /.box-header -->
-                <div class="box-body">
+                <div class="box-body table-responsive">
                     <table cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered table-hover">
                         <thead>
                         <tr>
@@ -127,10 +141,15 @@
                 $form.submit();
             });
 
-            /*$('#arovia').on('change', function()
+            $('#consejo_distrital').on('change', function()
             {
                 $form.submit();
-            });*/
+            });
+
+            $('#plan_distrital').on('change', function()
+            {
+                $form.submit();
+            });
 
             $form.on('submit', function(e)
             {
@@ -160,7 +179,8 @@
                             data: function (e)
                             {
                                 e.distrito = $input.val();
-//                                e.arovia = $('#arovia').val();
+                                e.consejo_distrital = $('#consejo_distrital').val();
+                                e.plan_distrital = $('#plan_distrital').val();
                             }
                         },
                     columns:

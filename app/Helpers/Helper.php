@@ -23,4 +23,28 @@ class Helper
         $td = "<a href='".$editRoute." '>".$attribute."</a>";
         return $td;
     }
+
+    public static function getLatLong($the_geom)
+    {
+        $geom = json_decode($the_geom);
+        $coordinates = !empty($geom->coordinates) ? $geom->coordinates : null;
+        $points = new \stdClass();
+        $points->lon = $coordinates != null ? $coordinates[0] : '';
+        $points->lat = $coordinates != null ? $coordinates[1] : '';
+        return $points;
+    }
+
+    public static function formatPolygon($the_geom)
+    {
+        if ($the_geom == null)
+            return false;
+
+        $crs = array(
+            "type" => "name",
+            "properties" => array("name" => "EPSG:4326")
+        );
+        $geom = json_decode($the_geom);
+        $geom->crs = $crs;
+        return json_encode($geom);
+    }
 }

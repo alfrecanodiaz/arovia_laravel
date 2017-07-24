@@ -26,18 +26,22 @@
                 <!-- /.box-header -->
                 <div class="box-body">
                     {!! Form::open(['route' => 'mapa.departamentos.store', 'method' => 'post', 'id' => 'create-form']) !!}
+
                         <div class="form-group">
                             {!! Form::label('the_geom', 'Geolocalización') !!}
                             {!! Form::text('the_geom', null, ['class' => 'form-control']) !!}
                         </div>
+
                         <div class="form-group">
                             {!! Form::label('dpto', 'Departamento Nro.') !!}
                             {!! Form::text('dpto', null, ['class' => 'form-control']) !!}
                         </div>
+
                         <div class="form-group">
                             {!! Form::label('dpto_desc', 'Descripción') !!}
                             {!! Form::text('dpto_desc', null, ['class' => 'form-control']) !!}
                         </div>
+
                         <div class="form-group">
                             {!! Form::label('arovia', 'Arovia') !!}
                             {!! Form::select('arovia',
@@ -46,6 +50,7 @@
                                 ['class' => 'form-control']
                             ) !!}
                         </div>
+                        
                         <button type="submit" class="btn btn-primary btn-flat pull-left">Crear</button>
                         <a href="{{route('mapa.departamentos.index')}}" class="btn btn-danger btn-flat pull-right">Cancelar</a>
                     {!! Form::close() !!}

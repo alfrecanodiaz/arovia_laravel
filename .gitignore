@@ -6,6 +6,7 @@
 !vendor/nilportugues/sql-query-builder/src/Builder/Syntax/UpdateWriter.php
 !vendor/nilportugues/sql-query-builder/src/Builder/Syntax/InsertWriter.php
 !vendor/nilportugues/sql-query-builder/src/Builder/Syntax/SelectWriter.php
+!vendor/nilportugues/sql-query-builder/src/Builder/Syntax/ColumnWriter.php
 /.idea
 /.vagrant
 Homestead.json

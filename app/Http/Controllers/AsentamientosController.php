@@ -10,7 +10,7 @@ use NilPortugues\Sql\QueryBuilder\Builder\GenericBuilder;
 use Yajra\Datatables\Datatables;
 use Illuminate\Http\Request;
 
-class DepartamentosController extends Controller
+class AsentamientosController extends Controller
 {
     /**
      * @var Http
@@ -33,23 +33,24 @@ class DepartamentosController extends Controller
 
     public function index()
     {
-        $arovia = array('' => 'Todos', 'si' => 'Si', 'no' => 'No');
-
-        return view('pages.departamentos.index', compact('arovia'));
+        return view('pages.asentamientos.index', compact(''));
     }
 
     public function indexAjax(Request $request)
     {
         $q = $this->builder->select()
-            ->setTable('paraguay_2012_departamentos')
-            ->setColumns(['cartodb_id', 'arovia', 'dpto', 'dpto_desc'])
-            ->orderBy('dpto')
-            ->orderBy('dpto_desc');
+            ->setTable('datos_por_asentamiento')
+            ->setColumns([
+                'cartodb_id',
+                'fecha_de_creacion',
+                'nombre',
+                'poblacion',
+                'superficie'
+            ])
+            ->orderBy('nombre');
 
-        if ($request->has('arovia') && $request->get('arovia') != '')
-            $q->where()->equals('arovia', $request->get('arovia'));
-        if ($request->has('departamento') && $request->get('departamento') != '')
-            $q->where()->like('dpto_desc', "%{$request->get('departamento')}%");
+        if ($request->has('asentamiento') && $request->get('asentamiento') != '')
+            $q->where()->like('nombre', "%{$request->get('asentamiento')}%");
 
         $this->query = DBHelper::prepare($this->builder, $q);
         $this->http->get($this->query, Server::FORMAT_JSON);
@@ -58,21 +59,24 @@ class DepartamentosController extends Controller
 
         $object = Datatables::of($data->rows)
             ->addColumn('action', function ($row) {
-                $asEdit = "mapa.departamentos.edit";
-                $asDestroy = "mapa.departamentos.delete";
+                $asEdit = "mapa.asentamientos.edit";
+                $asDestroy = "mapa.asentamientos.delete";
                 $editRoute = route( $asEdit, [$row->cartodb_id]);
                 $deleteRoute = route( $asDestroy, [$row->cartodb_id]);
 
                 return Helper::getTableButtons($editRoute, $deleteRoute);
             })
-            ->editColumn('dpto', function ($row){
-               return Helper::withHref("mapa.departamentos.edit", $row->cartodb_id, $row->dpto);
+            ->editColumn('nombre', function ($row){
+                return Helper::withHref("mapa.asentamientos.edit", $row->cartodb_id, $row->nombre);
             })
-            ->editColumn('dpto_desc', function ($row){
-                return Helper::withHref("mapa.departamentos.edit", $row->cartodb_id, $row->dpto_desc);
+            ->editColumn('fecha_de_creacion', function ($row){
+                return Helper::withHref("mapa.asentamientos.edit", $row->cartodb_id, $row->fecha_de_creacion);
             })
-            ->editColumn('arovia', function ($row){
-                return Helper::withHref("mapa.departamentos.edit", $row->cartodb_id, $row->arovia);
+            ->editColumn('poblacion', function ($row){
+                return Helper::withHref("mapa.asentamientos.edit", $row->cartodb_id, $row->poblacion);
+            })
+            ->editColumn('superficie', function ($row){
+                return Helper::withHref("mapa.asentamientos.edit", $row->cartodb_id, $row->superficie);
             })
             ->escapeColumns([]) //Para renderizar HTML
             ->make(true);
@@ -82,9 +86,7 @@ class DepartamentosController extends Controller
 
     public function create()
     {
-        $arovia = array('' => 'Todos', 'si' => 'Si', 'no' => 'No');
-
-        return view('pages.departamentos.create', compact('arovia'));
+        return view('pages.asentamientos.create', compact(''));
     }
 
     public function store(Request $request)
@@ -94,7 +96,7 @@ class DepartamentosController extends Controller
         if (Helper::formatPolygon($request->get('the_geom')))
             $request['the_geom'] = "ST_GeomFromGeoJSON('".Helper::formatPolygon($request->get('the_geom'))."')";
 
-        $q = $this->builder->insert()->setTable('paraguay_2012_departamentos');
+        $q = $this->builder->insert()->setTable('datos_por_asentamiento');
         $q->setValues($request->except(['_token']));
 
         $this->query = DBHelper::prepare($this->builder, $q);
@@ -102,26 +104,32 @@ class DepartamentosController extends Controller
         try {
             $this->http->post($this->query);
         } catch (RequestException $e) {
-            flash($this->http->getErrorFlash('store', 'departamento').$this->http->getErrorMessage($e))->error();
+            flash($this->http->getErrorFlash('store', 'asentamiento').$this->http->getErrorMessage($e))->error();
             $request['the_geom'] = $old_geom;
             return redirect()->back()->withInput($request->input());
         }
 
-        flash($this->http->getSuccessFlash('store', 'Departamento'))->success();
+        flash($this->http->getSuccessFlash('store', 'Asentamiento'))->success();
 
-        return redirect()->route('mapa.departamentos.index');
+        return redirect()->route('mapa.asentamientos.index');
     }
 
     public function edit($id)
     {
-        $q = $this->builder->select()->setTable('paraguay_2012_departamentos');
+        $q = $this->builder->select()->setTable('datos_por_asentamiento');
         $q->setColumns([
-            /*'the_geom',*/
+            // 'the_geom',
             'ST_AsGeoJSON(the_geom) as the_geom',
             'cartodb_id',
-            'arovia',
-            'dpto',
-            'dpto_desc'
+            '_url',
+            'caracteristicas',
+            'dedicacion_de_la_comunidad',
+            'fecha_de_creacion',
+            'infraestrucutra_local',
+            'nombre',
+            'origen_asentamiento',
+            'poblacion',
+            'superficie'
         ]);
         $q->where()->equals('cartodb_id', $id);
         $q->limit(1);
@@ -132,7 +140,7 @@ class DepartamentosController extends Controller
 
         $data = $this->http->getFirstRow();
 
-        return view('pages.departamentos.edit', compact('data'));
+        return view('pages.asentamientos.edit', compact('data'));
     }
 
     public function update($id, Request $request)
@@ -142,37 +150,38 @@ class DepartamentosController extends Controller
         if (Helper::formatPolygon($request->get('the_geom')))
             $request['the_geom'] = "ST_GeomFromGeoJSON('".Helper::formatPolygon($request->get('the_geom'))."')";
 
-        $q = $this->builder->update()->setTable('paraguay_2012_departamentos');
+        $q = $this->builder->update()->setTable('datos_por_asentamiento');
         $q->setValues($request->except(['_token']));
         $q->where()->equals('cartodb_id', (int)$id);
 
         $this->query = DBHelper::prepare($this->builder, $q);
+        // dd($this->query);
 
         try {
             $this->http->post($this->query);
         } catch (RequestException $e) {
-            flash($this->http->getErrorFlash('update', 'departamento').$this->http->getErrorMessage($e))->error();
+            flash($this->http->getErrorFlash('update', 'asentamiento').$this->http->getErrorMessage($e))->error();
             $request['the_geom'] = $old_geom;
             return redirect()->back()->withInput($request->input());
         }
 
-        flash($this->http->getSuccessFlash('update', 'Departamento'))->success();
+        flash($this->http->getSuccessFlash('update', 'Asentamiento'))->success();
 
-        return redirect()->route('mapa.departamentos.index');
+        return redirect()->route('mapa.asentamientos.index');
     }
 
     public function delete($id)
     {
-        $q = $this->builder->delete()->setTable('paraguay_2012_departamentos');
+        $q = $this->builder->delete()->setTable('datos_por_asentamiento');
         $q->where()->equals('cartodb_id', (int)$id);
 
         $this->query = DBHelper::prepare($this->builder, $q);
 
         $this->http->post($this->query);
 
-        flash($this->http->getSuccessFlash('delete', 'Departamento'))->success();
+        flash($this->http->getSuccessFlash('delete', 'Asentamiento'))->success();
 
-        return redirect()->route('mapa.departamentos.index');
+        return redirect()->route('mapa.asentamientos.index');
     }
 
     public function autocomplete(Request $request)
@@ -180,11 +189,11 @@ class DepartamentosController extends Controller
         if ($request->has('term')  && trim($request->has('term') !== ''))
         {
             $q = $this->builder->select()
-                ->setTable('paraguay_2012_departamentos')
-                ->setColumns(['cartodb_id', 'dpto_desc'])
-                ->orderBy('dpto_desc');
+                ->setTable('datos_por_asentamiento')
+                ->setColumns(['cartodb_id', 'nombre'])
+                ->orderBy('nombre');
 
-            $q->where()->like('dpto_desc', "%{$request->get('term')}%");
+            $q->where()->like('nombre', "%{$request->get('term')}%");
             $q->limit(5);
 
             $this->query = DBHelper::prepare($this->builder, $q);
@@ -195,7 +204,7 @@ class DepartamentosController extends Controller
 
         if (!empty($data->rows)) {
             foreach ($data->rows as $row)
-                $results[] = ['id' => $row->cartodb_id, 'value' => $row->dpto_desc];
+                $results[] = ['id' => $row->cartodb_id, 'value' => $row->nombre];
         }
 
         if (isset($results))
